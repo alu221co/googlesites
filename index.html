@@ -1,168 +1,596 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big Games 1P</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom</title>
 <style>
-  body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(45deg, #1f4037, #99f2c8, #ff416c, #ff4b2b);
-    background-size: 400% 400%;
-    animation: bgAnim 15s ease infinite;
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+/* -------- RESET -------- */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",sans-serif;
+  background:#05080c;
+  color:#eee;
+  overflow:hidden;
+}
 
-  @keyframes bgAnim {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+/* -------- BACKGROUND ANIMADO -------- */
+#bgAnim{
+  position:fixed;inset:0;z-index:-1;
+  background:linear-gradient(270deg,#0ff,#6f00ff,#ff00c8,#00ffaa);
+  background-size:800% 800%;
+  animation:bgShift 20s ease infinite;
+}
+@keyframes bgShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
-  header {
-    padding: 20px;
-    text-align: center;
-    background: rgba(0,0,0,0.5);
-    border-bottom: 2px solid #ffdd59;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.6);
-  }
+/* -------- PARTÍCULAS -------- */
+.particle{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:#fff;opacity:.5;animation:float 10s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(110vh) scale(0.5);}
+  to{transform:translateY(-10vh) scale(1);}
+}
 
-  header h1 {
-    font-size: 2.3em;
-    color: #ffdd59;
-    text-shadow: 0 0 10px #fffb7d;
-  }
+/* -------- INTRO LOGO -------- */
+#introLogo{
+  position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
+  background:#000;z-index:200;animation:fadeOut 3s ease forwards 3s;
+}
+#introLogo h1{
+  font-size:72px;
+  background:linear-gradient(90deg,#8B0000,#FFA500,#FF0000);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 35px rgba(150, 27, 11, 1);
+  animation:logoPulse 2s infinite alternate;
+}
+@keyframes logoPulse{from{transform:scale(1);}to{transform:scale(1.1);}}
+@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 
-  .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
-    padding: 40px;
-    max-width: 1200px;
-    margin: auto;
-    width: 100%;
-  }
+/* -------- PANEL PRINCIPAL -------- */
+#studioMenu{
+  position:fixed;inset:0;display:flex;flex-direction:column;
+  justify-content:flex-start;align-items:center;padding-top:60px;
+  background:rgba(0,0,0,0.65);backdrop-filter:blur(15px);
+  z-index:100;animation:fadeIn .8s ease;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+#studioMenu h2{
+  font-size:32px;margin-bottom:25px;
+  background:linear-gradient(90deg,#FF0000,#8B0000);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 20px rgba(255, 0, 0, 0.8);
+}
+#gameCards{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;}
 
-  .game-card {
-    background: rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 25px;
-    text-align: center;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
-  }
+/* -------- GAME CARD -------- */
+.gameCard{
+  width:300px;height:400px;
+  background:rgba(20,30,40,0.7);
+  border:1px solid rgba(255, 98, 0, 0.3);
+  border-radius:20px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:20px;cursor:pointer;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 25px rgba(255, 119, 0, 0.95), inset 0 0 25px rgba(255,255,255,0.05);
+  transition:transform .3s,box-shadow .3s;
+}
+.gameCard:hover{
+  transform:translateY(-12px) scale(1.05);
+  box-shadow:0 0 40px rgba(255, 4, 0, 0.99), 0 0 20px rgba(255, 0, 0, 0.5);
+}
 
-  .game-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 35px rgba(0,0,0,0.7), 0 0 15px #fffb7d;
-  }
+.gameCard h3{
+  margin:12px 0;color:#6ff;font-size:22px;
+  text-shadow:0 0 12px rgba(217, 121, 61, 1);
+}
+.gameCard p{
+  font-size:14px;color:#ccc;text-align:center;flex-grow:1;
+}
+.gameCard button{
+  margin-top:10px;padding:12px 26px;
+  border:none;border-radius:10px;font-weight:bold;
+  background:linear-gradient(135deg,#ff0080,#ff3b3b);
+  color:#fff;cursor:pointer;
+  box-shadow:0 0 18px rgba(255, 4, 0, 0.6);
+  transition:transform .25s,box-shadow .25s;
+}
+.gameCard button:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 28px rgba(255, 94, 0, 0.9);
+}
 
-  .game-card img {
-    width: 80px;
-    margin-bottom: 15px;
-    transition: transform 0.3s;
-  }
+/* -------- MENÚ INTERNO JUEGO -------- */
+#menu,#controlsModal,#overlay,#slotSelect,#loadMenu{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:10;
+}
+#menu{display:none;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);}
+#menu h1{
+  font-size:48px;color:#FF0000;text-shadow:0 0 18px rgba(255, 17, 0, 1);
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{from{text-shadow:0 0 8px rgba(250, 115, 48, 1);}to{text-shadow:0 0 25px rgba(161, 50, 19, 1);}}
+#menu button,
+#controlsModal button,
+#overlay button,
+#slotSelect button,
+#loadMenu button{
+  margin:8px;padding:14px 34px;font-size:18px;font-weight:bold;
+  border:none;border-radius:10px;cursor:pointer;
+  background:linear-gradient(135deg,#8B0000,#FF0000);
+  color:#fff;box-shadow:0 0 15px rgba(173, 27, 22, 0.5);
+  transition:transform .25s,box-shadow .25s;
+}
+#menu button:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(255, 0, 0, 0.8);}
+#controlsModal,#slotSelect,#loadMenu{
+  display:none;background:rgba(10,15,20,0.95);
+  border-radius:14px;padding:25px;text-align:center;z-index:20;
+  box-shadow:0 0 20px rgba(255, 0, 0, 0.91);
+}
 
-  .game-card:hover img {
-    transform: scale(1.1);
-  }
+/* -------- HUD -------- */
+#hud{
+  position:absolute;top:10px;left:10px;display:none;flex-direction:column;gap:6px;
+  font-size:16px;z-index:5;background:rgba(0,0,0,0.6);
+  padding:12px;border-radius:12px;
+  border:1px solid rgba(255, 60, 0, 0.73);
+  box-shadow:0 0 12px rgba(255, 47, 0, 0.4);
+}
+#hpBar{background:#333;height:18px;border-radius:9px;overflow:hidden;width:220px}
+#hpFill{height:100%;width:100%;background:#37d67a;transition:width .2s}
+#canvasWrap{display:flex;justify-content:center;align-items:center;height:100vh;padding-top:40px;}
+canvas{
+  background:#071018;border-radius:14px;
+  box-shadow:0 0 40px rgba(0,0,0,0.7),0 0 20px rgba(255, 47, 0, 0.49) inset;
+  border:2px solid rgba(255, 0, 0, 0.4);
+}
 
-  .game-card h3 {
-    font-size: 1.4em;
-    color: #ffdd59;
-    margin-bottom: 10px;
-    text-shadow: 0 0 6px #fffb7d;
-  }
+/* -------- OVERLAY GAME OVER -------- */
+#overlay{
+  display:none;background:rgba(0,0,0,0.9);
+  flex-direction:column;color:#fff;z-index:15;text-align:center;
+  padding:30px;border-radius:14px;box-shadow:0 0 28px rgba(255,0,0,0.6);
+}
+#overlay h2{font-size:38px;margin-bottom:10px;text-shadow:0 0 15px red;}
 
-  #gamePanel {
-    display: none;
-    width: 100%;
-    height: 100vh;
-    background: #000;
-    position: fixed;
-    top: 0; left: 0;
-    z-index: 1000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #closeBtn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: #ff416c;
-    color: #fff;
-    border: none;
-    padding: 10px 18px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(0,0,0,0.6);
-  }
-
-  #game {
-    width: 90%;
-    height: 90%;
-  }
+/* -------- SLOTS -------- */
+.slotPreview{margin:8px;padding:12px;background:#1a1a1a;
+  border:1px solid #d80d0dd1;border-radius:10px;color:#ddd;width:260px;text-align:left;position:relative;
+  transition:all .3s ease;
+}
+.slotPreview:hover{transform:scale(1.02);box-shadow:0 0 14px rgba(255, 0, 0, 0.77);}
+.slotPreview.empty{color:#777;text-align:center}
+.deleteBtn{position:absolute;top:5px;right:5px;background:#ff3b3b;color:#fff;border:none;padding:2px 5px;border-radius:4px;cursor:pointer;}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Big Games 1P</h1>
-</header>
+<!-- FONDO ANIMADO -->
+<div id="bgAnim"></div>
 
-<div class="games-grid">
-  <!-- Mario Bros Card -->
-  <div class="game-card" onclick="openMario()">
-    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" alt="Mario Bros">
-    <h3>Mario Bros</h3>
-    <p>Aventura clásica de plataformas. Salta, corre y derrota enemigos para avanzar.</p>
+<!-- PARTÍCULAS -->
+<script>
+for(let i=0;i<40;i++){
+  let p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(8+Math.random()*10)+"s";
+  document.body.appendChild(p);
+}
+</script>
+
+<!-- INTRO LOGO -->
+<div id="introLogo"><h1>GOLOZAPIEN STUDIOS</h1></div>
+
+<!-- MENÚ DE ESTUDIO -->
+<div id="studioMenu">
+  <h2>Catálogo de Juegos</h2>
+  <div id="gameCards">
+    <div class="gameCard" onclick="openZombieGame()">
+      
+      <h3>🧟 Z-upervivencia</h3>
+      <p>Defiende tu base, sobrevive a hordas de zombis y construye barreras estratégicas.</p>
+      <button>Jugar</button>
+    </div>
   </div>
+
+  <button onclick="toggleMusic()">🎵 Música</button>
 </div>
 
-<!-- Game Panel -->
-<div id="gamePanel">
-  <button id="closeBtn" onclick="closeGame()">Salir</button>
-  <div id="game"></div>
+<!-- MENÚ DEL JUEGO -->
+<div id="menu">
+  <h1>🧟 Z-upervivencia</h1>
+  <button id="playBtn">Jugar</button>
+  <button id="loadBtn">Cargar Partida</button>
+  <button id="controlsBtn">Controles</button>
+</div>
+
+<div id="controlsModal">
+  <h2>Controles</h2>
+  <p>W A S D / ⬆️ ⬇️ ⬅️ ➡️ → Mover</p>
+  <p>Barra de espacio → Disparar</p>
+  <p>E → Construir barrera (2 madera)</p>
+  <p>F → Construir puerta (3 madera)</p>
+  <p>R → Girar previsualización</p>
+  <button id="backBtn">Volver</button>
+</div>
+
+<div id="slotSelect">
+  <h2>Selecciona un Slot</h2>
+  <button class="slotBtn" data-slot="1">Slot 1</button>
+  <button class="slotBtn" data-slot="2">Slot 2</button>
+  <button class="slotBtn" data-slot="3">Slot 3</button>
+  <button class="slotBtn" data-slot="4">Slot 4</button>
+  <button onclick="closeSlotSelect()">Cancelar</button>
+</div>
+
+<div id="loadMenu">
+  <h2>Cargar Partida</h2>
+  <div id="slotPreviews"></div>
+  <button onclick="document.getElementById('loadMenu').style.display='none'">Cancelar</button>
+</div>
+
+<div id="hud">
+  <div>Vida: <span id="playerHP">10</span></div>
+  <div id="hpBar"><div id="hpFill"></div></div>
+  <div>Oleada: <span id="waveNum">0</span></div>
+  <div>Puntuación: <span id="score">0</span></div>
+  <div>Madera: <span id="woodCount">0</span></div>
+  <div>Slot activo: <span id="activeSlot">-</span></div>
+  <div>Mejoras de arma: <span id="weaponUp">0</span></div>
+</div>
+
+<div id="canvasWrap"><canvas id="game" width="900" height="600"></canvas></div>
+
+<div id="overlay">
+  <h2>¡Game Over!</h2>
+  <p id="goStats"></p>
+  <button id="restartBtn">Reiniciar</button>
 </div>
 
 <script>
-function openMario() {
-  document.getElementById("gamePanel").style.display = "flex";
-  // Configuración del emulador
-  EJS_player = "#game";
-  EJS_core = "nes";
-  EJS_color = "#000000";
-  EJS_startOnLoaded = true;
-  EJS_pathtodata = "https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data";
-  EJS_gameUrl = "https://cdn.jsdelivr.net/gh/bubbls/UGS-file-encryption@e0c78a58432c6486ebe1a50a78d263df65809a83/Super%20Mario%20Bros.%20(Europe).zip";
-  loadMario();
+/* ====== PORTAL DE ESTUDIO ====== */
+function openZombieGame(){
+  document.getElementById("studioMenu").style.display="none";
+  document.getElementById("menu").style.display="flex";
+}
+function toggleMusic(){
+  let music=document.getElementById("menuMusic");
+  if(music.paused){music.play();}else{music.pause();}
+}
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+const hud=document.getElementById("hud"),playerHPSpan=document.getElementById("playerHP"),
+waveNumEl=document.getElementById("waveNum"),scoreEl=document.getElementById("score"),
+woodEl=document.getElementById("woodCount"),hpFill=document.getElementById("hpFill"),
+overlay=document.getElementById("overlay"),goStats=document.getElementById("goStats"),
+slotSpan=document.getElementById("activeSlot"),slotPreviews=document.getElementById("slotPreviews"),
+weaponUpEl=document.getElementById("weaponUp");
+
+let keys={},mouse={x:canvas.width/2,y:canvas.height/2};
+let bullets=[],zombies=[],drops=[],structures=[];
+let player,score,wave,wood,lastShot=0,gameOver=false,nextWaveTimeout=null;
+let activeSlot=null;
+let placingStructure=false;
+let previewRotation=0;
+let currentPreview={x:0,y:0,w:60,h:20,hp:180,maxHp:180,rotation:0,type:"wall",color:"#8b5a2b",cost:2};
+let weaponUpgrades=0;
+
+const CONFIG={PLAYER_MAX_HP:10,BULLET_SPEED:8,FIRE_RATE:200,WOOD_COST:2,DOOR_COST:3,BULLET_DAMAGE:1};
+const ZOMBIE_TYPES={
+  walker:{hp:3,speed:0.8,color:"#8fd19e",damage:1,score:10},
+  runner:{hp:2,speed:2.2,color:"#f4c95d",damage:1,score:12},
+  tank:{hp:8,speed:0.6,color:"#d16b6b",damage:2,score:35},
+  boss:{hp:20,speed:1.2,color:"#b659aeff",damage:3,score:100}
+};
+
+// --- Menús ---
+document.getElementById("playBtn").onclick=()=>{document.getElementById("slotSelect").style.display="flex";};
+document.getElementById("controlsBtn").onclick=()=>{document.getElementById("controlsModal").style.display="flex";};
+document.getElementById("backBtn").onclick=()=>{document.getElementById("controlsModal").style.display="none";};
+document.getElementById("loadBtn").onclick=()=>{renderSlotPreviews();document.getElementById("loadMenu").style.display="flex";};
+document.getElementById("restartBtn").onclick=()=>{overlay.style.display="none";hud.style.display="flex";initGame();};
+
+document.querySelectorAll(".slotBtn").forEach(btn=>{
+  btn.onclick=()=>{
+    activeSlot=btn.dataset.slot;
+    slotSpan.textContent=activeSlot;
+    document.getElementById("slotSelect").style.display="none";
+    document.getElementById("menu").style.display="none";
+    hud.style.display="flex";
+    initGame();
+  };
+});
+
+function renderSlotPreviews(){
+  slotPreviews.innerHTML="";
+  for(let s=1;s<=4;s++){
+    let data=localStorage.getItem("slot"+s);
+    let div=document.createElement("div");
+    div.className="slotPreview";
+    if(data){
+      let save=JSON.parse(data);
+      div.innerHTML=`<b>Slot ${s}</b><br>Oleada: ${save.wave}<br>Puntuación: ${save.score}<br>Vida: ${save.hp}<br>Madera: ${save.wood}`;
+      let loadBtn=document.createElement("button"); loadBtn.textContent="Cargar"; loadBtn.onclick=()=>{loadGame(s);};
+      let delBtn=document.createElement("button"); delBtn.textContent="Borrar"; delBtn.className="deleteBtn"; delBtn.onclick=()=>{if(confirm("Borrar slot?")){localStorage.removeItem("slot"+s);renderSlotPreviews();}};
+      div.appendChild(loadBtn); div.appendChild(delBtn);
+    }else{div.classList.add("empty"); div.innerHTML=`Slot ${s} vacío`;}
+    slotPreviews.appendChild(div);
+  }
 }
 
-function closeGame() {
-  document.getElementById("gamePanel").style.display = "none";
-  document.getElementById("game").innerHTML = "";
+function loadGame(s){
+  let data=localStorage.getItem("slot"+s);
+  if(data){
+    activeSlot=s;slotSpan.textContent=activeSlot;
+    let save=JSON.parse(data);
+    document.getElementById("loadMenu").style.display="none";
+    document.getElementById("menu").style.display="none";
+    hud.style.display="flex";
+    initGame(save);
+  }
 }
 
-function loadMario() {
-  let script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/loader.js";
-  document.body.appendChild(script);
+function closeSlotSelect(){document.getElementById("slotSelect").style.display="none";}
+
+// --- Construcción ---
+function startPlacing(type,cost,color,resistance){
+  if(!placingStructure){
+    if(wood<cost) return;
+    placingStructure=true;
+    currentPreview={x:player.x,y:player.y,w:60,h:20,hp:60*resistance,maxHp:60*resistance,rotation:previewRotation,type,color,cost};
+  } else {
+    wood-=currentPreview.cost; woodEl.textContent=wood;
+    structures.push({...currentPreview});
+    saveGame();
+    placingStructure=false;
+  }
 }
+
+// --- Eventos ---
+document.addEventListener("keydown", e=>{
+  keys[e.code]=true;
+  if(placingStructure && e.code==="KeyR"){previewRotation=(previewRotation+90)%360;currentPreview.rotation=previewRotation;}
+  if(e.code==="KeyE"){startPlacing("wall", CONFIG.WOOD_COST,"#8b5a2b",3);}
+  if(e.code==="KeyF"){startPlacing("door", CONFIG.DOOR_COST,"#e1d84b",3);}
+  if(e.code==="Escape"){gameOver=!gameOver;if(gameOver){overlay.style.display="flex";}else{overlay.style.display="none";loop();}}
+});
+document.addEventListener("keyup", e=>{keys[e.code]=false;});
+
+// --- Mouse ---
+canvas.addEventListener("mousemove", e=>{
+  const rect=canvas.getBoundingClientRect();
+  mouse.x=e.clientX-rect.left; mouse.y=e.clientY-rect.top;
+});
+
+// --- Funciones principales ---
+function updateHUD(){
+  playerHPSpan.textContent=player.hp;
+  let pct=player.hp/CONFIG.PLAYER_MAX_HP;
+  hpFill.style.width=(pct*100)+"%";
+  hpFill.style.background=pct>0.6?"#37d67a":pct>0.3?"#ffd86b":"#ff6b6b";
+  scoreEl.textContent=score;
+  waveNumEl.textContent=wave;
+  woodEl.textContent=wood;
+  weaponUpEl.textContent=weaponUpgrades;
+}
+
+function saveGame(){
+  if(activeSlot){
+    localStorage.setItem("slot"+activeSlot,JSON.stringify({hp:player.hp,score,wave,wood,structures,weaponUpgrades}));
+  }
+}
+
+// --- Init Game ---
+function initGame(save=null){
+  player={x:0,y:0,r:14,hp:CONFIG.PLAYER_MAX_HP,speed:3.4,invuln:0};
+  bullets=[];zombies=[];drops=[];structures=[];
+  score=0;wave=0;wood=0;gameOver=false;nextWaveTimeout=null;weaponUpgrades=0;
+  if(save){
+    player.hp=save.hp;score=save.score;wave=save.wave;wood=save.wood;
+    structures=save.structures||[]; weaponUpgrades=save.weaponUpgrades||0;
+  }
+  updateHUD();
+  overlay.style.display="none";
+  startWave(4);
+  loop();
+}
+
+// --- Zombies ---
+function spawnZombie(type){
+  const t=ZOMBIE_TYPES[type],a=Math.random()*Math.PI*2,dist=400+Math.random()*200;
+  const x=player.x+Math.cos(a)*dist,y=player.y+Math.sin(a)*dist;
+  zombies.push({x,y,r:type==="tank"?20:type==="boss"?28:16,hp:t.hp,speed:t.speed,color:t.color,damage:t.damage,score:t.score,hitFlash:0});
+}
+
+function startWave(n){
+  wave++; updateHUD();
+  for(let i=0;i<n;i++){
+    if(wave%5===0&&i===0){spawnZombie("boss"); continue;}
+    let r=Math.random(); if(r<0.6) spawnZombie("walker"); else if(r<0.9) spawnZombie("runner"); else spawnZombie("tank");
+  }
+}
+
+function scheduleNextWave(){
+  let n=Math.floor(3+wave*1.5);
+  nextWaveTimeout=setTimeout(()=>{startWave(n);nextWaveTimeout=null;if(wave%10===0)weaponUpgrades++;},1500);
+}
+
+// --- Disparo ---
+function tryShoot(){
+  let now = performance.now();
+  if(keys["Space"] && now - lastShot > CONFIG.FIRE_RATE){
+    lastShot = now;
+    let mouseWorldX = player.x + (mouse.x - canvas.width/2);
+    let mouseWorldY = player.y + (mouse.y - canvas.height/2);
+    let a = Math.atan2(mouseWorldY - player.y, mouseWorldX - player.x);
+    bullets.push({
+      x: player.x,
+      y: player.y,
+      vx: Math.cos(a) * (CONFIG.BULLET_SPEED + weaponUpgrades*0.5),
+      vy: Math.sin(a) * (CONFIG.BULLET_SPEED + weaponUpgrades*0.5),
+      r: 4,
+      damage: CONFIG.BULLET_DAMAGE + weaponUpgrades,
+      trail: []
+    });
+  }
+}
+
+// --- Update ---
+function update(){
+  // Movimiento jugador
+  let nextX = player.x, nextY = player.y;
+  if(keys["KeyW"]||keys["ArrowUp"]) nextY -= player.speed;
+  if(keys["KeyS"]||keys["ArrowDown"]) nextY += player.speed;
+  if(keys["KeyA"]||keys["ArrowLeft"]) nextX -= player.speed;
+  if(keys["KeyD"]||keys["ArrowRight"]) nextX += player.speed;
+
+  // Colisión con estructuras
+  for(let s of structures){
+    let dx = Math.abs(nextX - s.x);
+    let dy = Math.abs(nextY - s.y);
+    if(dx < s.w/2 + player.r && dy < s.h/2 + player.r){
+      if(s.type==="wall"){
+        if(dx>dy) nextX = player.x; else nextY = player.y;
+      }
+    }
+  }
+  player.x = nextX; player.y = nextY;
+
+  tryShoot();
+
+  // Bullets
+  for(let i=bullets.length-1;i>=0;i--){
+    let b=bullets[i]; 
+    b.trail.push({x:b.x,y:b.y}); if(b.trail.length>5) b.trail.shift();
+    b.x += b.vx; b.y += b.vy;
+
+    for(let j=zombies.length-1;j>=0;j--){
+      let z = zombies[j];
+      if(Math.hypot(b.x - z.x, b.y - z.y) < b.r + z.r){
+        z.hp -= b.damage; z.hitFlash = 5; bullets.splice(i,1);
+        if(z.hp <= 0){
+          score += z.score; updateHUD();
+          if(Math.random() < 0.3) drops.push({x:z.x,y:z.y,type:"wood"});
+          else if(Math.random() < 0.2 && player.hp < CONFIG.PLAYER_MAX_HP) drops.push({x:z.x,y:z.y,type:"bandage"});
+          zombies.splice(j,1);
+        }
+        break;
+      }
+    }
+
+    if(b.x < player.x - 2000 || b.x > player.x + 2000 || b.y < player.y - 2000 || b.y > player.y + 2000){
+      bullets.splice(i,1);
+    }
+  }
+
+  // Zombies movement & collisions
+  for(let z of zombies){
+    let a=Math.atan2(player.y-z.y,player.x-z.x);
+    let nextZX = z.x + Math.cos(a)*z.speed;
+    let nextZY = z.y + Math.sin(a)*z.speed;
+
+    for(let s of structures){
+      let dx = Math.abs(nextZX - s.x);
+      let dy = Math.abs(nextZY - s.y);
+      if(dx < s.w/2 + z.r && dy < s.h/2 + z.r){
+        // zombies no atraviesan walls ni doors
+        if(s.type==="wall" || s.type==="door"){
+          if(dx>dy) nextZX = z.x; else nextZY = z.y;
+        }
+      }
+    }
+    z.x = nextZX; z.y = nextZY;
+
+    if(z.hitFlash>0) z.hitFlash--;
+    if(Math.hypot(player.x-z.x,player.y-z.y)<player.r+z.r){
+      let now=performance.now();
+      if(!player.invuln||now-player.invuln>600){player.hp-=z.damage;updateHUD();player.invuln=now;if(player.hp<=0)endGame();}
+    }
+  }
+
+  // Drops
+  for(let i=drops.length-1;i>=0;i--){
+    let d=drops[i];
+    if(Math.hypot(player.x-d.x,player.y-d.y)<player.r+10){
+      if(d.type==="wood"){wood++;updateHUD();}
+      else if(d.type==="bandage"){player.hp=CONFIG.PLAYER_MAX_HP;updateHUD();}
+      drops.splice(i,1);
+    }
+  }
+
+  // Preview
+  if(placingStructure){
+    let angle=Math.atan2(mouse.y-canvas.height/2,mouse.x-canvas.width/2);
+    currentPreview.x=player.x+Math.cos(angle)*80; currentPreview.y=player.y+Math.sin(angle)*80;
+  }
+
+  if(zombies.length===0&&!nextWaveTimeout) scheduleNextWave();
+}
+
+// --- Render ---
+function render(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save(); ctx.translate(canvas.width/2-player.x,canvas.height/2-player.y);
+
+  // Grid
+  ctx.strokeStyle="rgba(255,255,255,0.05)"; ctx.lineWidth=1;
+  for(let gx=-2000;gx<=2000;gx+=50){ctx.beginPath();ctx.moveTo(gx,-2000);ctx.lineTo(gx,2000);ctx.stroke();}
+  for(let gy=-2000;gy<=2000;gy+=50){ctx.beginPath();ctx.moveTo(-2000,gy);ctx.lineTo(2000,gy);ctx.stroke();}
+
+  // Structures
+  for(let s of structures){
+    ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.rotation*Math.PI/180);
+    ctx.fillStyle=s.type==="door"?"#e1d84b":"#8b5a2b";
+    ctx.fillRect(-s.w/2,-s.h/2,s.w,s.h);
+    ctx.fillStyle="red"; ctx.fillRect(-30,-s.h/2-12,60,4);
+    ctx.fillStyle="lime"; ctx.fillRect(-30,-s.h/2-12,(s.hp/s.maxHp)*60,4);
+    ctx.restore();
+  }
+
+  // Player
+  ctx.fillStyle="#37d67a"; ctx.beginPath(); ctx.arc(player.x,player.y,player.r,0,Math.PI*2); ctx.fill();
+
+  // Bullets
+  for(let b of bullets){
+    ctx.fillStyle="#fff";
+    for(let t of b.trail){ctx.globalAlpha=0.3; ctx.fillRect(t.x-2,t.y-2,4,4);}
+    ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2); ctx.fill();
+  }
+
+  // Zombies
+  ctx.font="12px Arial"; ctx.textAlign="center";
+  for(let z of zombies){
+    ctx.fillStyle=z.hitFlash>0?"#fff":z.color;
+    ctx.beginPath(); ctx.arc(z.x,z.y,z.r,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="#fff"; ctx.fillText(z.hp+" HP",z.x,z.y-z.r-5);
+  }
+
+  // Drops
+  for(let d of drops){
+    ctx.fillStyle=d.type==="wood"?"#a0522d":"#ff6b6b"; ctx.beginPath(); ctx.arc(d.x,d.y,10,0,Math.PI*2); ctx.fill();
+  }
+
+  // Preview
+  if(placingStructure){
+    ctx.save(); ctx.translate(currentPreview.x,currentPreview.y); ctx.rotate(currentPreview.rotation*Math.PI/180);
+    ctx.globalAlpha=0.5; ctx.fillStyle=currentPreview.color; ctx.fillRect(-currentPreview.w/2,-currentPreview.h/2,currentPreview.w,currentPreview.h);
+    ctx.globalAlpha=1; ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+function loop(){if(!gameOver){update();render();saveGame();requestAnimationFrame(loop);}}
+function endGame(){gameOver=true;overlay.style.display="flex"; goStats.textContent=`Oleada: ${wave}, Puntuación: ${score}, Madera: ${wood}`;}
+
+
 </script>
 
 </body>
 </html>
-
-
