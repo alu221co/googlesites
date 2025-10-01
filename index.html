@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Games 1P</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(45deg, #1f4037, #99f2c8, #ff416c, #ff4b2b);
+    background-size: 400% 400%;
+    animation: bgAnim 15s ease infinite;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @keyframes bgAnim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  header {
+    padding: 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+    border-bottom: 2px solid #ffdd59;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+  }
+
+  header h1 {
+    font-size: 2.3em;
+    color: #ffdd59;
+    text-shadow: 0 0 10px #fffb7d;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+    width: 100%;
+  }
+
+  .game-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+
+  .game-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.7), 0 0 15px #fffb7d;
+  }
+
+  .game-card img {
+    width: 80px;
+    margin-bottom: 15px;
+    transition: transform 0.3s;
+  }
+
+  .game-card:hover img {
+    transform: scale(1.1);
+  }
+
+  .game-card h3 {
+    font-size: 1.4em;
+    color: #ffdd59;
+    margin-bottom: 10px;
+    text-shadow: 0 0 6px #fffb7d;
+  }
+
+  #gamePanel {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #closeBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #ff416c;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,0,0,0.6);
+  }
+
+  #game {
+    width: 90%;
+    height: 90%;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Big Games 1P</h1>
+</header>
+
+<div class="games-grid">
+  <!-- Mario Bros Card -->
+  <div class="game-card" onclick="openMario()">
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" alt="Mario Bros">
+    <h3>Mario Bros</h3>
+    <p>Aventura clásica de plataformas. Salta, corre y derrota enemigos para avanzar.</p>
+  </div>
+</div>
+
+<!-- Game Panel -->
+<div id="gamePanel">
+  <button id="closeBtn" onclick="closeGame()">Salir</button>
+  <div id="game"></div>
+</div>
+
+<script>
+function openMario() {
+  document.getElementById("gamePanel").style.display = "flex";
+  // Configuración del emulador
+  EJS_player = "#game";
+  EJS_core = "nes";
+  EJS_color = "#000000";
+  EJS_startOnLoaded = true;
+  EJS_pathtodata = "https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data";
+  EJS_gameUrl = "https://cdn.jsdelivr.net/gh/bubbls/UGS-file-encryption@e0c78a58432c6486ebe1a50a78d263df65809a83/Super%20Mario%20Bros.%20(Europe).zip";
+  loadMario();
+}
+
+function closeGame() {
+  document.getElementById("gamePanel").style.display = "none";
+  document.getElementById("game").innerHTML = "";
+}
+
+function loadMario() {
+  let script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/loader.js";
+  document.body.appendChild(script);
+}
+</script>
+
+</body>
+</html>
+
+
