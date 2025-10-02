@@ -255,6 +255,10 @@ for(let i=0;i<40;i++){
 </div>
 
 <script>
+  function openZombieGame() {
+  document.getElementById('studioMenu').style.display = 'none'; // Oculta el menú de catálogo
+  document.getElementById('menu').style.display = 'flex';        // Muestra el menú del juego
+}
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
 const hud=document.getElementById("hud"),playerHPSpan=document.getElementById("playerHP"),
 waveNumEl=document.getElementById("waveNum"),scoreEl=document.getElementById("score"),
