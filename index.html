@@ -255,15 +255,6 @@ for(let i=0;i<40;i++){
 </div>
 
 <script>
-/* ====== PORTAL DE ESTUDIO ====== */
-function openZombieGame(){
-  document.getElementById("studioMenu").style.display="none";
-  document.getElementById("menu").style.display="flex";
-}
-function toggleMusic(){
-  let music=document.getElementById("menuMusic");
-  if(music.paused){music.play();}else{music.pause();}
-}
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
 const hud=document.getElementById("hud"),playerHPSpan=document.getElementById("playerHP"),
 waveNumEl=document.getElementById("waveNum"),scoreEl=document.getElementById("score"),
@@ -286,7 +277,7 @@ const ZOMBIE_TYPES={
   walker:{hp:3,speed:0.8,color:"#8fd19e",damage:1,score:10},
   runner:{hp:2,speed:2.2,color:"#f4c95d",damage:1,score:12},
   tank:{hp:8,speed:0.6,color:"#d16b6b",damage:2,score:35},
-  boss:{hp:20,speed:1.2,color:"#b659aeff",damage:3,score:100}
+  boss:{hp:20,speed:1.2,color:"#9b59b6",damage:3,score:100}
 };
 
 // --- Menús ---
@@ -352,12 +343,32 @@ function startPlacing(type,cost,color,resistance){
   }
 }
 
+// --- Romper barreras con tecla P ---
+function breakFrontBarrier() {
+  let angle = Math.atan2(mouse.y - canvas.height/2, mouse.x - canvas.width/2);
+  let frontX = player.x + Math.cos(angle) * 50;
+  let frontY = player.y + Math.sin(angle) * 50;
+
+  for (let i = 0; i < structures.length; i++) {
+    let s = structures[i];
+    let dx = Math.abs(frontX - s.x);
+    let dy = Math.abs(frontY - s.y);
+    if (dx < s.w/2 + 10 && dy < s.h/2 + 10 && s.type === "wall") {
+      structures.splice(i, 1);
+      wood += 2;
+      updateHUD();
+      break;
+    }
+  }
+}
+
 // --- Eventos ---
 document.addEventListener("keydown", e=>{
   keys[e.code]=true;
   if(placingStructure && e.code==="KeyR"){previewRotation=(previewRotation+90)%360;currentPreview.rotation=previewRotation;}
   if(e.code==="KeyE"){startPlacing("wall", CONFIG.WOOD_COST,"#8b5a2b",3);}
   if(e.code==="KeyF"){startPlacing("door", CONFIG.DOOR_COST,"#e1d84b",3);}
+  if(e.code==="KeyP"){breakFrontBarrier();}
   if(e.code==="Escape"){gameOver=!gameOver;if(gameOver){overlay.style.display="flex";}else{overlay.style.display="none";loop();}}
 });
 document.addEventListener("keyup", e=>{keys[e.code]=false;});
@@ -450,12 +461,13 @@ function update(){
   if(keys["KeyA"]||keys["ArrowLeft"]) nextX -= player.speed;
   if(keys["KeyD"]||keys["ArrowRight"]) nextX += player.speed;
 
-  // Colisión con estructuras
+  // ✅ Colisión más suave con estructuras
   for(let s of structures){
     let dx = Math.abs(nextX - s.x);
     let dy = Math.abs(nextY - s.y);
-    if(dx < s.w/2 + player.r && dy < s.h/2 + player.r){
-      if(s.type==="wall"){
+    let margin = 4;
+    if(dx < s.w/2 + player.r - margin && dy < s.h/2 + player.r - margin){
+      if(s.type==="wall" || s.type==="door"){
         if(dx>dy) nextX = player.x; else nextY = player.y;
       }
     }
@@ -499,7 +511,6 @@ function update(){
       let dx = Math.abs(nextZX - s.x);
       let dy = Math.abs(nextZY - s.y);
       if(dx < s.w/2 + z.r && dy < s.h/2 + z.r){
-        // zombies no atraviesan walls ni doors
         if(s.type==="wall" || s.type==="door"){
           if(dx>dy) nextZX = z.x; else nextZY = z.y;
         }
@@ -588,8 +599,6 @@ function render(){
 
 function loop(){if(!gameOver){update();render();saveGame();requestAnimationFrame(loop);}}
 function endGame(){gameOver=true;overlay.style.display="flex"; goStats.textContent=`Oleada: ${wave}, Puntuación: ${score}, Madera: ${wood}`;}
-
-
 </script>
 
 </body>
